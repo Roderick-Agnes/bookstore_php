@@ -154,11 +154,165 @@ if (isset($_SESSION['username'])) {
             $.ajax({
                 type: "POST",
                 url: "../core/load_subject_list_by_ajax.php",
+                data: {
+                    page: 0
+                },
                 cache: false,
                 success: function(data) {
                     const subjectTable = document.getElementById('subjectTable');
                     subjectTable.innerHTML = data;
 
+                }
+            });
+        }
+        const handleChangePage = (currentNumber) => {
+            const pageWrapper = document.getElementById('page-wrapper');
+            const pageWrapperContent = document.getElementById('page-wrapper-content');
+
+            pageWrapperContent.remove();
+            pageWrapper.innerHTML = `<div id='page-wrapper-content'><?php include '../admin/list_subjects.php' ?></div>`;
+
+            //call ajax
+            $.ajax({
+                type: "GET",
+                url: "../core/load_subject_list_by_ajax.php",
+                data: {
+                    page: currentNumber
+                },
+                cache: false,
+                success: function(data) {
+                    const subjectTable = document.getElementById('subjectTable');
+                    subjectTable.innerHTML = data;
+
+                }
+            });
+        }
+        const handleLoadSubjectTable = (currentNumber) => {
+            const pageWrapper = document.getElementById('page-wrapper');
+            const pageWrapperContent = document.getElementById('page-wrapper-content');
+
+            pageWrapperContent.remove();
+            pageWrapper.innerHTML = `<div id='page-wrapper-content'><?php include '../admin/list_subjects.php' ?></div>`;
+
+            //call ajax
+            $.ajax({
+                type: "GET",
+                url: "../core/load_subject_list_by_ajax.php",
+                data: {
+                    page: currentNumber
+                },
+                cache: false,
+                success: function(data) {
+                    const subjectTable = document.getElementById('subjectTable');
+                    subjectTable.innerHTML = data;
+
+                }
+            });
+        }
+        const handleDeleteSubjectItem = (currentNumber, id) => {
+
+            //call ajax
+            $.ajax({
+                type: "POST",
+                url: "../core/deleteSubjectItemById.php",
+                data: {
+                    id: id
+                },
+                cache: false,
+                success: function(data) {
+                    if (JSON.parse(data) == 'Ok') {
+                        document.getElementById('bookItem-' + id).remove();
+                        alert('Delete item with id = ' + id + ' success');
+                        handleLoadSubjectTable(currentNumber);
+                    } else {
+                        alert('Delete item with id = ' + id + ' error');
+                    }
+                }
+            });
+        }
+        const handleChangeToAddNewSubjectPage = () => {
+            const pageWrapper = document.getElementById('page-wrapper');
+            const pageWrapperContent = document.getElementById('page-wrapper-content');
+
+            pageWrapperContent.remove();
+            pageWrapper.innerHTML = `<div id='page-wrapper-content'><?php include '../admin/add_new_subject.php' ?></div>`;
+        }
+        const handleSaveNewSubject = () => {
+            const subjectName = document.getElementById('subjectName').value;
+            //call ajax
+            $.ajax({
+                type: "POST",
+                url: "../core/addNewSubject.php",
+                data: {
+                    subjectName: subjectName
+                },
+                cache: false,
+                success: function(data) {
+                    if (JSON.parse(data) == 'Ok') {
+                        handleLoadSubjectTable(1);
+                    } else {
+                        alert('Add new subject error');
+                    }
+                }
+            });
+        }
+        const handleChangeToEditSubjectPage = (id, name) => {
+            const pageWrapper = document.getElementById('page-wrapper');
+            const pageWrapperContent = document.getElementById('page-wrapper-content');
+
+            pageWrapperContent.remove();
+            pageWrapper.innerHTML = `<div id='page-wrapper-content'>
+
+            <div class="container">
+                <div class="modal-dialog modal-notify modal-warning" role="document">
+                    <!--Content-->
+                    <div class="modal-content">
+                        <!--Header-->
+                        <div class="modal-header text-center">
+                            <h4 class="modal-title white-text w-100 font-weight-bold py-2">Edit subject</h4>
+
+                        </div>
+
+                        <!--Body-->
+                        <div class="modal-body">
+                            <div class="md-form input-group mb-3">
+                                <input type="text" class="form-control" id="subjectId" name="subjectId" placeholder="subject id" value="` + id + `">
+                            </div>
+
+                            <div class="md-form input-group mb-3">
+                                <input type="text" class="form-control" id="subjectName" name="subjectName" placeholder="subject name" value="` + name + `">
+                            </div>
+
+                        </div>
+
+                        <!--Footer-->
+                        <div class="modal-footer justify-content-center">
+                            <a type="button" onclick="handleSaveSubjectById()" class="btn btn-outline-warning waves-effect">Save <i class="fas fa-paper-plane-o ml-1"></i></a>
+                        </div>
+                    </div>
+                    <!--/.Content-->
+                </div>
+            </div>
+            </div>`;
+        }
+        const handleSaveSubjectById = () => {
+            const subjectId = document.getElementById('subjectId').value;
+            const subjectName = document.getElementById('subjectName').value;
+            //call ajax
+            $.ajax({
+                type: "POST",
+                url: "../core/editSubjectById.php",
+                data: {
+                    subjectId: subjectId,
+                    subjectName: subjectName
+                },
+                cache: false,
+                success: function(data) {
+                    if (JSON.parse(data) == 'Ok') {
+                        handleLoadSubjectTable(1);
+                    } else {
+                        alert('Edit subject error');
+                    }
                 }
             });
         }

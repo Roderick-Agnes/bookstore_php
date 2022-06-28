@@ -4,7 +4,10 @@
             <h1 class="page-header">
                 Subject list
             </h1>
-            <button type="button" class="btn btn-success" onclick="javascript:window.location.href = 'insert_subject.php'">Add subject</button>
+            <?php
+            include "../component/modal.php"
+            ?>
+            <a data-toggle="modal" data-target="#modalLoginForm" onclick="handleChangeToAddNewSubjectPage()" class="btn btn-success">Add subject</a>
             <br />
         </div>
     </div>
