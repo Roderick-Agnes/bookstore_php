@@ -9,10 +9,10 @@
             <!-- Collapsed content -->
             <ul id="collapseExample1" class="collapse list-group list-group-flush">
                 <li class="list-group-item py-1 ">
-                    <a id='bookTopic' href="#" class="text-reset m-5">Book topics</a>
+                    <a id='bookTopic' href="javascript:void(0)" class="text-reset m-5">Book topics</a>
                 </li>
                 <li class="list-group-item py-1">
-                    <a id='bookList' href="../admin/list_books.php" class="text-reset  m-5">Book lists</a>
+                    <a id='bookList' href="javascript:void(0)" class="text-reset  m-5">Book lists</a>
                 </li>
             </ul>
             <!-- Collapse 1 -->

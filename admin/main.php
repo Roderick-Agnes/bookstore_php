@@ -137,12 +137,17 @@ if (isset($_SESSION['username'])) {
     <script type="text/javascript" src="../public/assets/js/tata.js?v=<?php echo time(); ?>"></script>
     <script>
         const bookTopic = document.getElementById("bookTopic");
+        const bookList = document.getElementById("bookList");
         $(document).ready(function() {
             bookTopic.addEventListener("click", bookTopicTab);
-            $('#subjectsTable').DataTable();
+            bookList.addEventListener("click", bookListTab);
+
+
 
         });
         const bookTopicTab = () => {
+            $('#subjectsTable').DataTable();
+
             const pageWrapper = document.getElementById('page-wrapper');
             const pageWrapperContent = document.getElementById('page-wrapper-content');
 
@@ -161,6 +166,30 @@ if (isset($_SESSION['username'])) {
                 success: function(data) {
                     const subjectTable = document.getElementById('subjectTable');
                     subjectTable.innerHTML = data;
+
+                }
+            });
+        }
+        const bookListTab = () => {
+            $('#booksTable').DataTable();
+            const pageWrapper = document.getElementById('page-wrapper');
+            const pageWrapperContent = document.getElementById('page-wrapper-content');
+
+
+            pageWrapperContent.remove();
+            pageWrapper.innerHTML = `<div id='page-wrapper-content'><?php include '../admin/list_books.php' ?></div>`;
+
+            //call ajax
+            $.ajax({
+                type: "post",
+                url: "../core/load_book_list_by_ajax.php",
+                data: {
+                    page: 0
+                },
+                cache: false,
+                success: function(data) {
+                    const bookTable = document.getElementById('booksTable');
+                    bookTable.innerHTML = data;
 
                 }
             });
@@ -209,6 +238,28 @@ if (isset($_SESSION['username'])) {
                 }
             });
         }
+        const handleLoadBookTable = (currentNumber) => {
+            const pageWrapper = document.getElementById('page-wrapper');
+            const pageWrapperContent = document.getElementById('page-wrapper-content');
+
+            pageWrapperContent.remove();
+            pageWrapper.innerHTML = `<div id='page-wrapper-content'><?php include '../admin/list_books.php' ?></div>`;
+
+            //call ajax
+            $.ajax({
+                type: "post",
+                url: "../core/load_book_list_by_ajax.php",
+                data: {
+                    page: currentNumber
+                },
+                cache: false,
+                success: function(data) {
+                    const bookTable = document.getElementById('booksTable');
+                    bookTable.innerHTML = data;
+
+                }
+            });
+        }
         const handleDeleteSubjectItem = (currentNumber, id) => {
 
             //call ajax
@@ -224,6 +275,27 @@ if (isset($_SESSION['username'])) {
                         document.getElementById('bookItem-' + id).remove();
                         alert('Delete item with id = ' + id + ' success');
                         handleLoadSubjectTable(currentNumber);
+                    } else {
+                        alert('Delete item with id = ' + id + ' error');
+                    }
+                }
+            });
+        }
+        const handleDeleteBookItem = (currentNumber, id) => {
+
+            //call ajax
+            $.ajax({
+                type: "POST",
+                url: "../core/deleteBookItemById.php",
+                data: {
+                    id: id
+                },
+                cache: false,
+                success: function(data) {
+                    if (JSON.parse(data) == 'Ok') {
+                        document.getElementById('bookItem-' + id).remove();
+                        alert('Delete item with id = ' + id + ' success');
+                        handleLoadBookTable(currentNumber);
                     } else {
                         alert('Delete item with id = ' + id + ' error');
                     }
@@ -315,6 +387,14 @@ if (isset($_SESSION['username'])) {
                     }
                 }
             });
+        }
+
+        const handleChangeToAddNewBookPage = () => {
+            const pageWrapper = document.getElementById('page-wrapper');
+            const pageWrapperContent = document.getElementById('page-wrapper-content');
+
+            pageWrapperContent.remove();
+            pageWrapper.innerHTML = `<div id='page-wrapper-content'><?php include '../admin/add_new_book.php' ?></div>`;
         }
     </script>
 </body>
